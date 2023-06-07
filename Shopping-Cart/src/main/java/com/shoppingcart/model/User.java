@@ -9,7 +9,7 @@ public class User {
 
     private int id;
     private String userName;
-    private String passwordHash;
+    private String password;
     private String role;
     private String name;
     private String address;
@@ -20,10 +20,10 @@ public class User {
 
     public User() {}
 
-    private User(int id, String userName, String passwordHash, String role, String name, String address, String city, String stateCode, String zip) {
+    private User(int id, String userName, String password, String role, String name, String address, String city, String stateCode, String zip) {
         this.id = id;
         this.userName = userName;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.role = role;
         this.name = name;
         this.address = address;
@@ -48,12 +48,12 @@ public class User {
         this.userName = userName;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPasswordHash(String password) {
+        this.password = password;
     }
 
     public String getRole() {
@@ -109,7 +109,7 @@ public class User {
         return "User{" +
                 "userId=" + id +
                 ", userName='" + userName + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                ", passwordHash='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
@@ -124,11 +124,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(userName, user.userName) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(role, user.role) && Objects.equals(name, user.name) && Objects.equals(address, user.address) && Objects.equals(city, user.city) && Objects.equals(stateCode, user.stateCode) && Objects.equals(zip, user.zip);
+        return id == user.id && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(role, user.role) && Objects.equals(name, user.name) && Objects.equals(address, user.address) && Objects.equals(city, user.city) && Objects.equals(stateCode, user.stateCode) && Objects.equals(zip, user.zip);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, passwordHash, role, name, address, city, stateCode, zip);
+        return Objects.hash(id, userName, password, role, name, address, city, stateCode, zip);
     }
 }

@@ -3,6 +3,8 @@ package com.shoppingcart.dao;
 import com.shoppingcart.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ import java.util.List;
 
 @Component
 public class JdbcUserDao implements UserDao{
+
+    // TODO: 6/6/2023 NEED TO MAKE UPDATES TO USER MODEL AND SECURITY //
+
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -41,13 +46,22 @@ public class JdbcUserDao implements UserDao{
     }
 
     @Override
-    public int findIdByUsername(String username) {
-        return 0;
+    public User findByUsername(String username) {
+        if (username == null) throw new IllegalArgumentException("Username cannot be null");
+        for(User user : this.findAll()) {
+            if (user.getUserName().equalsIgnoreCase(username)) {
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException("User " + username + " was not found.");
     }
 
     @Override
-    public User create(User user) {
-        return null;
+    public User create(User newUser) {
+       String sql = "INSERT INTO users (user_name, password_hash, role, name, address, city, state_code, zip) values (?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
+       String password_hash = new BCryptPasswordEncoder().encode(newUser.getPassword());
+       int userId = jdbcTemplate.queryForObject(sql, int.class, newUser.getUserName(), password_hash, newUser.getRole(), newUser.getName(), newUser.getAddress(), newUser.getCity(), newUser.getStateCode(), newUser.getZip());
+       return getByUserId(userId);
     }
 
 

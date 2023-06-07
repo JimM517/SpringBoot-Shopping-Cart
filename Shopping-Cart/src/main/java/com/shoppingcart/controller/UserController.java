@@ -1,6 +1,6 @@
 package com.shoppingcart.controller;
 
-import com.shoppingcart.dao.JdbcUserDao;
+import com.shoppingcart.dao.UserDao;
 import com.shoppingcart.model.User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +14,15 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-    private final JdbcUserDao jdbcUserDao;
+    private final UserDao userDao;
 
-    public UserController(JdbcUserDao jdbcUserDao) {
-        this.jdbcUserDao = jdbcUserDao;
+    public UserController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @GetMapping
     public List<User> getUsers() {
-        return jdbcUserDao.findAll();
+        return userDao.findAll();
     }
 
 }

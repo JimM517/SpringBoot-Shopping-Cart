@@ -10,8 +10,8 @@ public interface UserDao {
 
     User getByUserId(int userId);
 
-    int findIdByUsername(String username);
+    User findByUsername(String username);
 
-    User create(User user);
+    User create(User newUser);
 
 }
