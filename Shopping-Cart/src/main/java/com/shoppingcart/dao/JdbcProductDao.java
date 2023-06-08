@@ -1,10 +1,19 @@
 package com.shoppingcart.dao;
 
 import com.shoppingcart.model.Product;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class JdbcProductDao implements ProductDao {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public JdbcProductDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<Product> listProducts() {
