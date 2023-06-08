@@ -31,12 +31,28 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public List<Product> findProductsByName(String productName) {
-        return null;
+        List<Product> productList = new ArrayList<>();
+        String sql = "SELECT product_id, product_sku, name, description, price, image_name FROM product WHERE name LIKE ?";
+        String filter = '%' + productName + '%';
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, filter);
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            productList.add(product);
+        }
+        return productList;
     }
 
     @Override
     public List<Product> findProductsBySku(String product_sku) {
-        return null;
+        List<Product> productList = new ArrayList<>();
+        String sql = "SELECT product_id, product_sku, name, description, price, image_name FROM product WHERE product_sku LIKE ?";
+        String filter = '%' + product_sku + '%';
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, filter);
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            productList.add(product);
+        }
+        return productList;
     }
 
     @Override
