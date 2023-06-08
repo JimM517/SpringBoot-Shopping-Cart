@@ -3,10 +3,7 @@ package com.shoppingcart.controller;
 import com.shoppingcart.dao.ProductDao;
 import com.shoppingcart.model.Product;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +36,13 @@ public class ProductController {
             return productDao.findProductsByName(name);
         }
         return productDao.listProducts();
+    }
+
+
+    // THIS IS WORKING
+    @GetMapping(path = "/{id}")
+    public Product findProductById(@PathVariable int id) {
+        return productDao.productById(id);
     }
 
 

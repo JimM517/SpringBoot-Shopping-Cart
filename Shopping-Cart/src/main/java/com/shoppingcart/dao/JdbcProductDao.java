@@ -56,8 +56,14 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public Product productInfo(int id) {
-        return null;
+    public Product productById(int id) {
+        Product product = null;
+        String sql = "SELECT product_id, product_sku, name, description, price, image_name FROM product WHERE product_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+        if (results.next()) {
+            product = mapRowToProduct(results);
+        }
+        return product;
     }
 
 

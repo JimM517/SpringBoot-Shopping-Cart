@@ -12,6 +12,6 @@ public interface ProductDao {
 
     List<Product> findProductsBySku(String product_sku);
 
-    Product productInfo(int id);
+    Product productById(int id);
 
 }
