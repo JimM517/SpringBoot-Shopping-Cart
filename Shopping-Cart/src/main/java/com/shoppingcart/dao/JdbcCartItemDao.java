@@ -21,6 +21,18 @@ public class JdbcCartItemDao implements CartItemDao{
     }
 
 
+//    String sql = "SELECT SUM(price * quantity) AS cart_total FROM product\n" +
+//            "JOIN cart_item on cart_item.product_id = product.product_id\n" +
+//            "JOIN users ON users.user_id = cart_item.user_id\n" +
+//            "WHERE users.user_id = 1";
+//
+//    String anotherSQL = "SELECT product.name, product.price, cart_item.quantity, SUM(product.price * cart_item.quantity) FROM cart_item\n" +
+//            "JOIN product ON product.product_id = cart_item.product_id\n" +
+//            "JOIN users ON users.user_id = cart_item.user_id\n" +
+//            "WHERE cart_item.user_id = 1\n" +
+//            "GROUP BY product.name, product.price, cart_item.quantity";
+
+
     @Override
     public List<CartItem> getCartItems() {
         List<CartItem> cartItems = new ArrayList<>();
