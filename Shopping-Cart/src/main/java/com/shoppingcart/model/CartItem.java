@@ -55,6 +55,13 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     @Override
     public String toString() {
@@ -63,6 +70,7 @@ public class CartItem {
                 ", userId=" + userId +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
+                ", product=" + product +
                 '}';
     }
 
@@ -71,11 +79,11 @@ public class CartItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItem cartItem = (CartItem) o;
-        return cartId == cartItem.cartId && userId == cartItem.userId && productId == cartItem.productId && quantity == cartItem.quantity;
+        return cartId == cartItem.cartId && userId == cartItem.userId && productId == cartItem.productId && quantity == cartItem.quantity && Objects.equals(product, cartItem.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cartId, userId, productId, quantity);
+        return Objects.hash(cartId, userId, productId, quantity, product);
     }
 }

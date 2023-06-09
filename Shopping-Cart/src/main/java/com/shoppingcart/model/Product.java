@@ -3,6 +3,7 @@ package com.shoppingcart.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+
 public class Product {
 
     private int id;
