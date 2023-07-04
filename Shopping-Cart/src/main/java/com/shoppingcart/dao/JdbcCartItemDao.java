@@ -48,6 +48,7 @@ public class JdbcCartItemDao implements CartItemDao{
     }
 
     //THIS MAY NOT BE NEEDED AT THIS POINT SINCE getByUserId works properly
+    //mapRowToCartItem won't work in this scenario
     @Override
     public List<CartItem> getProductsById(int productId) {
         List<CartItem> cartByProdId = new ArrayList<>();
@@ -84,14 +85,26 @@ public class JdbcCartItemDao implements CartItemDao{
         return products;
     }
 
+    //THIS ALSO WORKS, may not be needed
     @Override
     public List<Product> getProductsByUserId(int userId) {
-        return null;
+        List<Product> usersProducts = new ArrayList<>();
+        String sql = "SELECT * FROM product " +
+                    "JOIN cart_item ON cart_item.product_id = product.product_id " +
+                    "JOIN users ON users.user_id = cart_item.user_id " +
+                    "WHERE cart_item.user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            usersProducts.add(product);
+        }
+        return usersProducts;
     }
 
     @Override
     public void deleteCartItem(int cartId) {
-
+        String sqlProd = "DELETE FROM cart_item WHERE product_id = ?";
+        jdbcTemplate.update(sqlProd, cartId);
     }
 
 
@@ -103,6 +116,17 @@ public class JdbcCartItemDao implements CartItemDao{
         cartItem.setQuantity(results.getInt("quantity"));
         cartItem.setProduct(productDao.productById(results.getInt("product_id")));
         return cartItem;
+    }
+
+    private Product mapRowToProduct(SqlRowSet results) {
+        Product product = new Product();
+        product.setId(results.getInt("product_id"));
+        product.setProduct_sku(results.getString("product_sku"));
+        product.setName(results.getString("name"));
+        product.setDescription(results.getString("description"));
+        product.setPrice(results.getBigDecimal("price"));
+        product.setImageName(results.getString("image_name"));
+        return product;
     }
 
 }

@@ -30,7 +30,7 @@ CREATE TABLE product (
 );
 
 
-CREATE TABLE wishlist(
+CREATE TABLE wishlist (
     wishlist_id SERIAL,
     user_id int NOT NULL,
     name varchar(50) NOT NULL,
