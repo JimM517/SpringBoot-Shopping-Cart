@@ -4,6 +4,7 @@ import com.shoppingcart.model.CartItem;
 import com.shoppingcart.model.Product;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CartItemDao {
 
@@ -11,7 +12,7 @@ public interface CartItemDao {
 
     List<CartItem> getProductsById(int productId);
 
-    List<CartItem> getByUserId(int userId);
+    List<Map<String, Object>> getByUserId(int userId);
 
     List<Product> getProductsByUserId(int userId);
 

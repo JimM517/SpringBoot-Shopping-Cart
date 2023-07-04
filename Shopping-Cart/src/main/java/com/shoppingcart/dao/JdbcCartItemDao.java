@@ -7,7 +7,9 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JdbcCartItemDao implements CartItemDao{
@@ -45,14 +47,41 @@ public class JdbcCartItemDao implements CartItemDao{
         return cartItems;
     }
 
+    //THIS MAY NOT BE NEEDED AT THIS POINT SINCE getByUserId works properly
     @Override
     public List<CartItem> getProductsById(int productId) {
-        return null;
+        List<CartItem> cartByProdId = new ArrayList<>();
+        String sql = "SELECT product.name, product.description, product.price FROM product " +
+                        "JOIN cart_item ON cart_item.product_id = product.product_id " +
+                        "JOIN users ON users.user_id = cart_item.user_id " +
+                        "WHERE cart_item.product_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, productId);
+        while(results.next()) {
+            CartItem cartItem = mapRowToCartItem(results);
+            cartByProdId.add(cartItem);
+        }
+        return cartByProdId;
     }
 
+    //CHANGED TO RETURN LIST of mapped objects instead of cartItem object
+    //THIS WORKS SO FAR
     @Override
-    public List<CartItem> getByUserId(int userId) {
-        return null;
+    public List<Map<String, Object>> getByUserId(int userId) {
+//        List<CartItem> productsForUser = new ArrayList<>();
+        List<Map<String, Object>> products = new ArrayList<>();
+        String sql = "SELECT product.name, product.description, product.price FROM product " +
+                "JOIN cart_item ON cart_item.product_id = product.product_id " +
+                "JOIN users ON users.user_id = cart_item.user_id " +
+                "WHERE cart_item.user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            Map<String, Object> product = new HashMap<>();
+            product.put("name", results.getString("name"));
+            product.put("description", results.getString("description"));
+            product.put("price", results.getBigDecimal("price"));
+            products.add(product);
+        }
+        return products;
     }
 
     @Override
