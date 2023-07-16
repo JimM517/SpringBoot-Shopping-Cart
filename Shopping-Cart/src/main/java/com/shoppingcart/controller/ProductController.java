@@ -3,10 +3,9 @@ package com.shoppingcart.controller;
 import com.shoppingcart.dao.ProductDao;
 import com.shoppingcart.model.Product;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @PreAuthorize("permitAll()")
@@ -19,10 +18,20 @@ public class ProductController {
         this.productDao = productDao;
     }
 
-//    @GetMapping
-//    public List<Product> list() {
-//        return productDao.listProducts();
-//    }
+ @GetMapping()
+    public List<Product> getProds(@RequestParam(required = false) String sku, @RequestParam(required = false) String name) {
+        if (sku == null && name == null) {
+            return productDao.listProducts();
+        } else {
+            return productDao.filterSkuOrName(sku, name);
+        }
+ }
+
+ @GetMapping(path = "/{id}")
+    public Product getProductById(@PathVariable int id) {
+        return productDao.productById(id);
+ }
+
 
 
     // TODO: 6/7/2023  WORK ON FILTERING RESULTS WITH TWO PARAMS //
@@ -40,11 +49,14 @@ public class ProductController {
 //    }
 
 
-    // THIS IS WORKING
-    @GetMapping(path = "/{id}")
-    public Product findProductById(@PathVariable int id) {
-        return productDao.productById(id);
-    }
+
+
+
+//    // THIS IS WORKING
+//    @GetMapping(path = "/{id}")
+//    public Product findProductById(@PathVariable int id) {
+//        return productDao.productById(id);
+//    }
 
 
 
