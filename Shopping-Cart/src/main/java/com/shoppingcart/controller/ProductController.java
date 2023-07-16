@@ -3,9 +3,10 @@ package com.shoppingcart.controller;
 import com.shoppingcart.dao.ProductDao;
 import com.shoppingcart.model.Product;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @PreAuthorize("permitAll()")
@@ -27,16 +28,16 @@ public class ProductController {
     // TODO: 6/7/2023  WORK ON FILTERING RESULTS WITH TWO PARAMS //
 
 
-    @GetMapping
-    public List<Product> findProducts(@RequestParam(value = "product_sku", defaultValue = "") String product_sku, @RequestParam(value = "name", defaultValue = "") String name) {
-        if (product_sku != null) {
-            return productDao.findProductsBySku(product_sku);
-        }
-        if (name != null) {
-            return productDao.findProductsByName(name);
-        }
-        return productDao.listProducts();
-    }
+//    @GetMapping
+//    public List<Product> findProducts(@RequestParam(required = false) String sku, @RequestParam(required = false) String name) {
+//        if (product_sku != null) {
+//            return productDao.findProductsBySku(product_sku);
+//        }
+//        if (name != null) {
+//            return productDao.findProductsByName(name);
+//        }
+//        return productDao.listProducts();
+//    }
 
 
     // THIS IS WORKING

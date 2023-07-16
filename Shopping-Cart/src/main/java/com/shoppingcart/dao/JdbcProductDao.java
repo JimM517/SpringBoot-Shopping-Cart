@@ -66,6 +66,54 @@ public class JdbcProductDao implements ProductDao {
         return product;
     }
 
+    @Override
+    public List<Product> getProductsByUserId(int userId) {
+        List<Product> userList = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE product_id IN (SELECT product_id FROM cart_item WHERE user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            userList.add(product);
+        }
+        return userList;
+    }
+
+    @Override
+    public List<Product> getProductsInWishList(int wishlistId) {
+        List<Product> wishList = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE product_id IN (SELECT product_id FROM wishlist_item WHERE wishlist_id = ?)";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, wishlistId);
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            wishList.add(product);
+        }
+        return wishList;
+    }
+
+    @Override
+    public List<Product> filterSkuOrName(String productSku, String name) {
+        List<Product> productList = new ArrayList<>();
+        String nameLike = "%" + (name == null ? "" : name) + "%";
+
+        // checking if sku is empty or null, won't include in where clause
+        boolean isSku = productSku != null && productSku.trim().length() > 0;
+
+        String sql = "SELECT * FROM product WHERE name ILIKE ? " +
+                (isSku ? "AND product_sku = ? " : "") +
+                "ORDER BY product_id";
+        SqlRowSet results;
+        if (isSku) {
+            results = jdbcTemplate.queryForRowSet(sql, nameLike, productSku);
+        } else {
+            results = jdbcTemplate.queryForRowSet(sql, nameLike);
+        }
+        while(results.next()) {
+            Product product = mapRowToProduct(results);
+            productList.add(product);
+        }
+        return productList;
+    }
+
 
     private Product mapRowToProduct(SqlRowSet results) {
         Product product = new Product();
