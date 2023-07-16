@@ -15,11 +15,11 @@ import java.util.Map;
 public class JdbcCartItemDao implements CartItemDao{
 
     private final JdbcTemplate jdbcTemplate;
-    private final ProductDao productDao;
+
 
     public JdbcCartItemDao(JdbcTemplate jdbcTemplate, ProductDao productDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.productDao = productDao;
+
     }
 
 
@@ -34,6 +34,55 @@ public class JdbcCartItemDao implements CartItemDao{
 //            "WHERE cart_item.user_id = 1\n" +
 //            "GROUP BY product.name, product.price, cart_item.quantity";
 
+
+    @Override
+    public CartItem getById(int cartItemId, int userId) {
+        CartItem item = null;
+        String sql = "SELECT * FROM cart_item WHERE cart_item_id = ? AND user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, cartItemId, userId);
+        while(results.next()) {
+            item = mapRowToCartItem(results);
+        }
+        return item;
+    }
+
+    @Override
+    public CartItem getByProdAndUserId(int productId, int userId) {
+        CartItem item = null;
+        String sql = "SELECT * FROM cart_item WHERE product_id = ? AND user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, productId, userId);
+        while(results.next()) {
+            item = mapRowToCartItem(results);
+        }
+        return item;
+    }
+
+    @Override
+    public List<CartItem> getByUser(int userId) {
+        List<CartItem> cartItemList = new ArrayList<>();
+        String sql = "SELECT * FROM cart_item WHERE user_id = ? ORDER BY cart_item_id";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            CartItem item = mapRowToCartItem(results);
+            cartItemList.add(item);
+        }
+        return cartItemList;
+    }
+
+    @Override
+    public int addItem(CartItem item) {
+        String sql = "INSERT INTO cart_item(user_id, product_id, quantity) VALUES (?, ?, ?) RETURNING cart_item_id";
+        int addedId = jdbcTemplate.queryForObject(sql, int.class, item.getUserId(), item.getProductId(), item.getQuantity());
+        return addedId;
+
+    }
+
+    @Override
+    public void update(CartItem item) {
+        String sql = "UPDATE cart_item SET quantity = ? WHERE cart_item_id = ?";
+        jdbcTemplate.update(sql, item.getQuantity(), item.getCartId());
+
+    }
 
     @Override
     public List<CartItem> getCartItems() {
@@ -95,16 +144,21 @@ public class JdbcCartItemDao implements CartItemDao{
                     "WHERE cart_item.user_id = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         while(results.next()) {
-            Product product = mapRowToProduct(results);
-            usersProducts.add(product);
+
         }
         return usersProducts;
     }
 
     @Override
-    public void deleteCartItem(int cartId) {
-        String sqlProd = "DELETE FROM cart_item WHERE product_id = ?";
-        jdbcTemplate.update(sqlProd, cartId);
+    public void deleteCartItem(int cartId, int userId) {
+        String sql = "DELETE FROM cart_item WHERE cart_item_id = ? AND user_id = ?";
+        jdbcTemplate.update(sql, cartId, userId);
+    }
+
+
+    @Override
+    public void clearCartByUser(int userId) {
+
     }
 
 
@@ -114,19 +168,9 @@ public class JdbcCartItemDao implements CartItemDao{
         cartItem.setUserId(results.getInt("user_id"));
         cartItem.setProductId(results.getInt("product_id"));
         cartItem.setQuantity(results.getInt("quantity"));
-        cartItem.setProduct(productDao.productById(results.getInt("product_id")));
         return cartItem;
     }
 
-    private Product mapRowToProduct(SqlRowSet results) {
-        Product product = new Product();
-        product.setId(results.getInt("product_id"));
-        product.setProduct_sku(results.getString("product_sku"));
-        product.setName(results.getString("name"));
-        product.setDescription(results.getString("description"));
-        product.setPrice(results.getBigDecimal("price"));
-        product.setImageName(results.getString("image_name"));
-        return product;
-    }
+
 
 }

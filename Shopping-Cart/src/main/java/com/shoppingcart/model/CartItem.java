@@ -15,12 +15,11 @@ public class CartItem {
 
 
 
-    public CartItem(int cartId, int userId, int productId, int quantity, Product product) {
+    public CartItem(int cartId, int userId, int productId, int quantity) {
         this.cartId = cartId;
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
-        this.product = product;
     }
 
     public int getCartId() {
