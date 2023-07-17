@@ -156,9 +156,11 @@ public class JdbcCartItemDao implements CartItemDao{
     }
 
 
+    // CLEAR CART BY USER ID
     @Override
     public void clearCartByUser(int userId) {
-
+        String sql = "DELETE FROM cart_item WHERE user_id = ?";
+        jdbcTemplate.update(sql, userId);
     }
 
 
