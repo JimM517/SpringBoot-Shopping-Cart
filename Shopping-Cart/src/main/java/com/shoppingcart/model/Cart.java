@@ -3,7 +3,6 @@ package com.shoppingcart.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Cart {
 
@@ -15,19 +14,23 @@ public class Cart {
 
 
     public Cart() {
-
+        this.cartItems = new ArrayList<>();
+        this.taxAmount = new BigDecimal("0.00");
     }
 
-    public Cart(BigDecimal subTotal, BigDecimal taxAmount, BigDecimal cartTotal, List<CartItem> cartItems) {
-        this.subTotal = subTotal;
-        this.taxAmount = taxAmount;
-        this.cartTotal = cartTotal;
+
+
+    public Cart(List<CartItem> cartItems) {
+        this();
         this.cartItems = cartItems;
     }
 
     //GETTERS AND SETTERS
     public BigDecimal getSubTotal() {
-        return subTotal;
+       if (subTotal == null) {
+           calculateSubTotal();
+       }
+       return subTotal;
     }
 
     public void setSubTotal(BigDecimal subTotal) {
@@ -43,6 +46,9 @@ public class Cart {
     }
 
     public BigDecimal getCartTotal() {
+        if (cartTotal == null) {
+            calculateTotal();
+        }
         return cartTotal;
     }
 
@@ -50,35 +56,29 @@ public class Cart {
         this.cartTotal = cartTotal;
     }
 
-    public List<CartItem> getCartItems() {
-        return cartItems;
+    public CartItem[] getCartItems() {
+        CartItem result[] = new CartItem[cartItems.size()];
+        return cartItems.toArray(result);
     }
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
 
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "subTotal=" + subTotal +
-                ", taxAmount=" + taxAmount +
-                ", cartTotal=" + cartTotal +
-                ", cartItems=" + cartItems +
-                '}';
+
+    public void calculateSubTotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        for(CartItem item : cartItems) {
+            subtotal = subtotal.add(item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())));
+        }
+        subTotal = subtotal;
+    }
+
+    public void calculateTotal() {
+        BigDecimal total = getSubTotal().add(taxAmount);
+        cartTotal = total;
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cart cart = (Cart) o;
-        return Objects.equals(subTotal, cart.subTotal) && Objects.equals(taxAmount, cart.taxAmount) && Objects.equals(cartTotal, cart.cartTotal) && Objects.equals(cartItems, cart.cartItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(subTotal, taxAmount, cartTotal, cartItems);
-    }
 }
