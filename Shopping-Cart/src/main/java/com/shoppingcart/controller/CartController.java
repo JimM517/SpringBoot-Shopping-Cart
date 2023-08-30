@@ -12,6 +12,7 @@ import java.security.Principal;
 
 @RestController
 @CrossOrigin
+@PreAuthorize("permitAll()")
 @RequestMapping("/cart")
 public class CartController {
 
@@ -45,7 +46,6 @@ public class CartController {
 //    }
 
     @GetMapping()
-    @PreAuthorize("permitAll()")
     public Cart getUsersCart(Principal principal) {
         return cartService.getCart(principal);
     }
